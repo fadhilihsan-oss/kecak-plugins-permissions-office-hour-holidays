@@ -527,7 +527,7 @@ class WorkHourPermissionTest {
         // Act
         String result = permission.getPropertyOptions();
 
-        // Assert
+        // Assert test
         assertThat(result).isEqualTo("[]");
         appUtil.verify(() -> AppUtil.readPluginResource(
                 WorkHourPermission.class.getName(),

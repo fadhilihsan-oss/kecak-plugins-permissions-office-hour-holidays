@@ -41,7 +41,7 @@ class ActivatorTest {
         // Act
         activator.stop(context);
 
-        // Assert
+        // Assert test
         verify(registration).unregister();
     }
 }
