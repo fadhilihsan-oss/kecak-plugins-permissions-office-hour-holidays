@@ -1,4 +1,4 @@
-package com.kinnara.kecakplugins.kecakpluginspermissionsofficehourholidays;
+package com.kinnara.kecakplugins.kecakpluginspermissionsofficehourholidays.permission.workhours;
 
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.datalist.model.DatalistPermission;
@@ -54,7 +54,8 @@ public class WorkHourPermission extends UserviewPermission
                 }
             }
         } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Unable to retrieve current user timezone, falling back to " + DEFAULT_TIME_ZONE, e);
+            LOGGER.log(Level.WARNING,
+                    "Unable to retrieve the current user's time zone; falling back to " + DEFAULT_TIME_ZONE, e);
         }
         return DEFAULT_TIME_ZONE;
     }
@@ -74,7 +75,8 @@ public class WorkHourPermission extends UserviewPermission
             // If the value is a standard zone ID (for example, "Asia/Jakarta", "Asia/Makassar", or "GMT+08:00")
             return ZoneId.of(tz);
         } catch (NumberFormatException | DateTimeException e) {
-            LOGGER.log(Level.WARNING, "Invalid user timezone value '" + tz + "', falling back to " + DEFAULT_TIME_ZONE, e);
+            LOGGER.log(Level.WARNING,
+                    "Invalid user time zone value '" + tz + "'; falling back to " + DEFAULT_TIME_ZONE, e);
             return DEFAULT_TIME_ZONE;
         }
     }
@@ -146,7 +148,7 @@ public class WorkHourPermission extends UserviewPermission
             Object startObj = row.get("startTime");
             Object finishObj = row.get("finishTime");
             if (startObj == null || finishObj == null) {
-                throw new IllegalArgumentException("Each interval needs startTime and finishTime.");
+                throw new IllegalArgumentException("Each interval must include a start time and an end time.");
             }
             return new WorkInterval(
                     parseTime(startObj.toString()),
@@ -161,7 +163,7 @@ public class WorkHourPermission extends UserviewPermission
 
     private static WorkInterval parseIntervalJson(JSONObject row) throws JSONException {
         if (!row.has("startTime") || !row.has("finishTime")) {
-            throw new IllegalArgumentException("Each interval JSON object needs startTime and finishTime.");
+            throw new IllegalArgumentException("Each interval JSON object must include a start time and an end time.");
         }
         return new WorkInterval(
                 parseTime(row.getString("startTime")),
@@ -203,7 +205,7 @@ public class WorkHourPermission extends UserviewPermission
 
     @Override
     public String getName() {
-        return "Work Hour Permission";
+        return "Work Hours Permission";
     }
 
     @Override
@@ -214,7 +216,7 @@ public class WorkHourPermission extends UserviewPermission
 
     @Override
     public String getDescription() {
-        return "Restricts userview, form, and datalist access only during selected work hours.";
+        return "Restricts access to userviews, forms, and data lists to the selected work hours.";
     }
 
     @Override

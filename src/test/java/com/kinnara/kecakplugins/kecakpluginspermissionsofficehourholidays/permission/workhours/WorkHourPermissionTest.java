@@ -1,4 +1,4 @@
-package com.kinnara.kecakplugins.kecakpluginspermissionsofficehourholidays;
+package com.kinnara.kecakplugins.kecakpluginspermissionsofficehourholidays.permission.workhours;
 
 import org.joget.apps.app.service.AppUtil;
 import org.joget.directory.model.User;
@@ -382,10 +382,10 @@ class WorkHourPermissionTest {
         // Act + Assert
         assertThatThrownBy(() -> invoke(method, Map.of("finishTime", "10:00")))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Each interval needs startTime and finishTime.");
+                .hasMessage("Each interval must include a start time and an end time.");
         assertThatThrownBy(() -> invoke(method, Map.of("startTime", "09:00")))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Each interval needs startTime and finishTime.");
+                .hasMessage("Each interval must include a start time and an end time.");
     }
 
     @Test
@@ -424,10 +424,10 @@ class WorkHourPermissionTest {
         // Act + Assert
         assertThatThrownBy(() -> invoke(method, new JSONObject().put("finishTime", "17:00")))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Each interval JSON object needs startTime and finishTime.");
+                .hasMessage("Each interval JSON object must include a start time and an end time.");
         assertThatThrownBy(() -> invoke(method, new JSONObject().put("startTime", "09:00")))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Each interval JSON object needs startTime and finishTime.");
+                .hasMessage("Each interval JSON object must include a start time and an end time.");
     }
 
     @Test
@@ -504,9 +504,10 @@ class WorkHourPermissionTest {
         WorkHourPermission permission = new WorkHourPermission();
 
         // Act + Assert
-        assertThat(permission.getName()).isEqualTo("Work Hour Permission");
-        assertThat(permission.getDescription()).isEqualTo("Restricts userview, form, and datalist access only during selected work hours.");
-        assertThat(permission.getLabel()).isEqualTo("Work Hour Permission");
+        assertThat(permission.getName()).isEqualTo("Work Hours Permission");
+        assertThat(permission.getDescription()).isEqualTo(
+                "Restricts access to userviews, forms, and data lists to the selected work hours.");
+        assertThat(permission.getLabel()).isEqualTo("Work Hours Permission");
         assertThat(permission.getClassName()).isEqualTo(WorkHourPermission.class.getName());
         assertThat(permission.getVersion()).isNotBlank();
     }

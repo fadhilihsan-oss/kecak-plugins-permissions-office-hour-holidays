@@ -1,6 +1,6 @@
 [
   {
-    "title": "Work Hour Permission Settings",
+    "title": "Work Hours Permission Settings",
     "properties": [
       {
         "name": "workIntervals",
@@ -10,7 +10,7 @@
         "columns": [
           {
             "key": "startTime",
-            "label": "Start Time (HH:mm)",
+            "label": "Start time (HH:mm)",
             "required": "true",
             "options": [
               {"value": "00:00", "label": "00:00"}, {"value": "00:30", "label": "00:30"},
@@ -42,7 +42,7 @@
           },
           {
             "key": "finishTime",
-            "label": "Finish Time (HH:mm)",
+            "label": "End time (HH:mm)",
             "required": "true",
             "options": [
               {"value": "00:00", "label": "00:00"}, {"value": "00:30", "label": "00:30"},
@@ -73,7 +73,7 @@
             ]
           }
         ],
-        "description": "Select Start Time and Finish Time for each allowed interval. Access is denied during breaks and when no intervals are configured."
+        "description": "Select a start and end time for each allowed interval. Access is denied during breaks or when no intervals are configured."
       }
     ]
   }

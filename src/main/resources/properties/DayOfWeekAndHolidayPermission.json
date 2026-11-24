@@ -1,0 +1,112 @@
+[
+  {
+    "title": "@@dayOfWeekHoliday.edit@@",
+    "properties": [
+      {
+        "name": "allowedDays",
+        "label": "@@dayOfWeekHoliday.allowedDays@@",
+        "type": "checkbox",
+        "required": "true",
+        "description": "@@dayOfWeekHoliday.allowedDays.description@@",
+        "value": "MONDAY;TUESDAY;WEDNESDAY;THURSDAY;FRIDAY;SATURDAY;SUNDAY",
+        "options": [
+          {
+            "value": "MONDAY",
+            "label": "@@dayOfWeekHoliday.monday@@"
+          },
+          {
+            "value": "TUESDAY",
+            "label": "@@dayOfWeekHoliday.tuesday@@"
+          },
+          {
+            "value": "WEDNESDAY",
+            "label": "@@dayOfWeekHoliday.wednesday@@"
+          },
+          {
+            "value": "THURSDAY",
+            "label": "@@dayOfWeekHoliday.thursday@@"
+          },
+          {
+            "value": "FRIDAY",
+            "label": "@@dayOfWeekHoliday.friday@@"
+          },
+          {
+            "value": "SATURDAY",
+            "label": "@@dayOfWeekHoliday.saturday@@"
+          },
+          {
+            "value": "SUNDAY",
+            "label": "@@dayOfWeekHoliday.sunday@@"
+          }
+        ]
+      },
+      {
+        "name": "allowNationalHoliday",
+        "label": "@@dayOfWeekHoliday.allowNationalHoliday@@",
+        "type": "checkbox",
+        "options": [
+          {
+            "value": "true",
+            "label": "@@dayOfWeekHoliday.allowNationalHoliday@@"
+          }
+        ]
+      },
+      {
+        "name": "useCustomHolidaySource",
+        "label": "@@dayOfWeekHoliday.useCustomHolidaySource@@",
+        "type": "checkbox",
+        "options": [
+          {
+            "value": "true",
+            "label": ""
+          }
+        ]
+      },
+      {
+        "name": "holidayFormId",
+        "label": "@@dayOfWeekHoliday.holidayForm@@",
+        "type": "selectbox",
+        "options_ajax": "[CONTEXT_PATH]/web/json/app[APP_PATH]/plugin/%s/service?action=getHolidayForms",
+        "control_field": "useCustomHolidaySource",
+        "control_value": "true"
+      },
+      {
+        "name": "customHolidayTable",
+        "label": "@@dayOfWeekHoliday.customHolidayTable@@",
+        "type": "selectbox",
+        "required": "true",
+        "options_ajax_on_change": "holidayFormId",
+        "options_ajax": "[CONTEXT_PATH]/web/json/app[APP_PATH]/plugin/%s/service?action=getHolidayTables",
+        "control_field": "useCustomHolidaySource",
+        "control_value": "true"
+      },
+      {
+        "name": "customHolidayDateColumn",
+        "label": "@@dayOfWeekHoliday.customHolidayDateColumn@@",
+        "type": "selectbox",
+        "required": "true",
+        "description": "@@dayOfWeekHoliday.customHolidayDateColumn.description@@",
+        "options_ajax_on_change": "customHolidayTable",
+        "options_ajax": "[CONTEXT_PATH]/web/json/app[APP_PATH]/plugin/%s/service?action=getHolidayDateColumns",
+        "control_field": "useCustomHolidaySource",
+        "control_value": "true"
+      },
+      {
+        "name": "customHolidayStatusColumn",
+        "label": "@@dayOfWeekHoliday.customHolidayStatusColumn@@",
+        "type": "selectbox",
+        "description": "@@dayOfWeekHoliday.customHolidayStatusColumn.description@@",
+        "options_ajax_on_change": "customHolidayTable",
+        "options_ajax": "[CONTEXT_PATH]/web/json/app[APP_PATH]/plugin/%s/service?action=getHolidayStatusColumns",
+        "control_field": "useCustomHolidaySource",
+        "control_value": "true"
+      },
+      {
+        "name": "blockedMessage",
+        "label": "@@dayOfWeekHoliday.blockedMessage@@",
+        "type": "textarea",
+        "value": "Akses ke formulir ini tidak diizinkan hari ini."
+      }
+    ]
+  }
+]
