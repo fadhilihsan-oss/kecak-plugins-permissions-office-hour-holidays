@@ -1,77 +1,83 @@
-# Kecak Permissions: Office Hour and Holidays
+# Panduan Konfigurasi: Holiday & Work Hour Permission
 
-This bundle provides **Work Hours Permission** and **Day-of-Week and Holiday
-Permission**.
+Panduan ini berisi langkah-langkah untuk mengonfigurasi plugin kontrol akses pada Kecak Workflow. Terdapat dua jenis pembatasan akses yang dibahas dalam dokumen ini:
+1. **Holiday Permission**: Membatasi akses berdasarkan tanggal/hari libur.
+2. **Work Hour Permission**: Membatasi akses berdasarkan rentang jam operasional (jam kerja).
 
-## Project structure
+---
 
-All implementation packages are under
-`com.kinnara.kecakplugins.kecakpluginspermissionsofficehourholidays`:
+## Bagian 1: Holiday Permission
 
-- `activator` — OSGi bundle lifecycle and plugin registration
-- `holiday.client` — national holiday API client
-- `holiday.model` — holiday data model
-- `holiday.repository` — database access
-- `holiday.service` — holiday synchronization and lookup
-- `permission.dayofweek` — day-of-week and holiday permission
-- `permission.workhours` — work-hours permission
-- `permission.validator` — day-of-week and holiday rules
+**Holiday Permission** (*Permission by Date*) adalah plugin kontrol akses pada Kecak Workflow yang berfungsi untuk membatasi akses pengguna ke **Form** maupun **Menu Userview** pada tanggal-tanggal libur yang telah ditentukan.
 
-Permission class names changed during this refactor. Existing Kecak
-configurations that reference the previous `PermissionByDate` or
-`WorkHourPermission` class names must be updated to the new plugin names.
+### 1.1 Prasyarat Data
+Sebelum memasang plugin ini pada Form atau Menu, pastikan Anda sudah memiliki:
+* Form dan tabel khusus untuk **Master Data Hari Libur** (misalnya `master_holiday`).
+* Terdapat setidaknya satu data hari libur yang telah diinput dengan status **`AKTIF`**.
 
-## Build
+### 1.2 Langkah Konfigurasi & Pemasangan
 
-Run `mvn clean package` from this directory. The plugin bundle is created under
-`target`.
+#### A. Mengelola Data Hari Libur
+1. Buka menu **Master Data Hari Libur** pada portal.
+2. Klik tombol **Tambah/New**, lalu lengkapi informasi berikut:
+    * **Tanggal Libur:** Pilih tanggal yang akan diberlakukan sebagai hari libur.
+    * **Keterangan:** Isi nama atau alasan libur (contoh: *Cuti Bersama* atau *Libur Nasional*).
+    * **Status:** Pastikan Anda memilih/mengisi dengan nilai **`AKTIF`**.
+3. Klik **Save** untuk menyimpan data libur tersebut.
 
-## Work Hours Permission
+#### B. Menerapkan Plugin ke Form atau Menu
+1. Masuk ke ruang desain aplikasi Anda (*App Design*).
+2. Tentukan di mana *permission* ini akan dipasang:
+    * **Di Form:** Buka **Form Builder**, masuk ke tab **Properties** -> **Advanced** -> **Permission**.
+    * **Di Userview (Menu):** Buka **Userview Builder**, lalu klik **Configure Permission** pada menu yang ingin dibatasi.
+3. Pada pilihan *Permission Type*, pilih **Permission by Date**.
+4. Arahkan sumber referensi *permission* ini ke tabel `master_holiday` yang sudah disiapkan sebelumnya.
+5. Klik **OK** pada jendela konfigurasi, lalu klik tombol **SAVE** di bagian atas *Builder*.
 
-Configure allowed work intervals in the permission settings. The current user's
-timezone is used when available; Asia/Jakarta is the fallback.
+#### C. Meninjau Hasil
+* Saat pengguna biasa (non-admin) mencoba membuka Form/Menu tersebut pada tanggal yang berstatus `AKTIF` di data libur, akses akan langsung ditolak (*Access Denied*).
+* Untuk membuka kembali aksesnya, cukup ubah status tanggal tersebut menjadi `TIDAK AKTIF` melalui menu Master Data Hari Libur.
 
-## Day-of-Week and Holiday Permission
+---
 
-This Form Permission plugin allows access according to the current day of the
-week and Indonesian national holidays. Access can be independently allowed or
-blocked for each day, Monday through Sunday. **Allow access on national
-holidays** controls whether a national holiday bypasses the selected weekdays.
-When enabled, holiday access is allowed even if that weekday is unchecked;
-when disabled, access is blocked on holidays. On other dates, access follows
-the allowed-days selection. Existing configurations with individual day
-properties remain supported.
+## Bagian 2: Work Hour Permission
 
-Before deploying, create the `app_holiday_calendar` table in the application's
-`setupDataSource` database using
-[`src/main/resources/app_holiday_calendar.sql`](src/main/resources/app_holiday_calendar.sql).
-If the current year has no holiday records, the plugin retrieves confirmed
-holidays from APIHariLibur_V2 on its first permission evaluation and stores
-them locally. Network, API, or database failures are surfaced rather than
-silently treated as non-holidays.
+**Work Hour Permission** adalah plugin kontrol akses pada Kecak Workflow yang berfungsi untuk membatasi hak akses pengguna ke **Form** maupun **Menu Userview** berdasarkan rentang jam operasional atau jam kerja yang diizinkan.
 
-The API source is maintained by a third party, not an Indonesian government
-service. Collective leave (`Cuti Bersama` / `Joint Holiday`) and tentative
-(`belum pasti`) dates are excluded. The initial sync requires internet access
-to `raw.githubusercontent.com`; subsequent evaluations use the local database.
+### 2.1 Prasyarat
+Pastikan Form atau Menu Userview yang ingin dibatasi hak aksesnya sudah selesai dibuat dan siap dikonfigurasi.
 
-The internal table is the default source and continues its yearly API sync.
-Alternatively, enable **Use a custom holiday calendar source**, then select a
-form and one of its Date Picker fields. The table and field lists are scoped to
-forms in the current app. The date field must store dates in `yyyy-MM-dd`
-format, and the form table must already contain the holiday records; this
-plugin does not create forms or populate the selected form table.
+### 2.2 Langkah Konfigurasi & Pemasangan
 
-An optional status field can store `Active`/`Inactive`, `Aktif`/`Tidak Aktif`,
-or boolean values. An active holiday follows **Allow access on national
-holidays**. An inactive record is treated as a non-holiday and access follows
-the allowed-days setting. If there is no matching record, the allowed-days
-setting also applies. Without a status field, custom holidays retain the
-previous behavior.
+#### A. Membuka Pengaturan Permission
+1. Tentukan di mana *permission* ini akan dipasang:
+    * **Di Form:** Buka **Form Builder**, klik tab **Properties** -> **Advanced** -> **Permission**.
+    * **Di Userview (Menu):** Buka **Userview Builder**, lalu klik menu yang dituju dan pilih **Configure Permission**.
+2. Pada *dropdown* pilihan tipe *permission*, pilih **Work Hour Permission**.
 
-When this permission is assigned to the root Form, its `blockedMessage`
-overrides the standard unauthorized message when date validation denies
-access. For a field or section, Kecak omits the element; it does not display a
-permission-specific message for element-level denial.
+#### B. Mengatur Interval Jam Kerja (Update Terbaru)
+Berdasarkan pembaruan format terbaru, jeda waktu istirahat dikonfigurasi dengan cara memecah atau membuat baris interval waktu baru.
 
-The plugin title in Kecak is **Day-of-Week and Holiday Permission**.
+1. Pada bagian **Allowed Work Intervals**, klik ikon **`+`** (plus) untuk menambahkan baris jam operasional.
+2. Atur jam mulai dan jam selesai menggunakan pilihan *dropdown* atau format 24 jam (**HH:MM**).
+    * **START TIME:** Jam mulai akses diizinkan.
+    * **FINISH TIME:** Jam batas akhir akses diizinkan.
+3. **Mengatur Waktu Istirahat:** Tambahkan baris interval baru untuk memisahkan jam kerja.
+    * *Contoh Pengaturan (Istirahat jam 12:00 - 13:00):*
+        * **Baris 1:** `08:00` - `12:00`
+        * **Baris 2:** `13:00` - `17:00`
+    * Dengan format di atas, akses form/menu akan otomatis ditolak pada pukul 12:01 hingga 12:59.
+4. Anda bisa mengatur urutan baris menggunakan ikon panah atas/bawah, atau menghapus baris dengan ikon **`x`** silang merah.
+
+#### C. Menyimpan Konfigurasi
+1. Klik **OK** pada jendela konfigurasi *Work Hour Permission*.
+2. Klik tombol **SAVE** di bagian atas *Builder* untuk menyimpan seluruh pengaturan ke dalam aplikasi.
+
+---
+
+## Bagian 3: Menggabungkan Kedua Permission (Opsional)
+Jika Anda ingin menerapkan **kedua aturan secara bersamaan** (Form/Menu hanya bisa diakses pada jam kerja DAN bukan pada hari libur), ikuti langkah berikut:
+1. Pada pilihan *Permission Type*, pilih **Composite Permission**.
+2. Tambahkan **Permission by Date** (Holiday) dan **Work Hour Permission** ke dalam konfigurasi Composite tersebut.
+3. Atur logika penggabungan menjadi **`AND`**.
+4. Lakukan konfigurasi interval jam dan referensi tabel libur sesuai panduan di atas.
